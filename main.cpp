@@ -11,11 +11,11 @@ template<typename T> void printElement(T t, const int& width){
 	cout << left << setw(width) << setfill(separator) << t;
 }
 
-struct data_unit{
+struct data_type{
 	char type;
 	int intu;
 	string stru;
-	data_unit(char type, string s){
+	data_type(char type, string s){
 		this->type =  type;
 		switch(type){
 			case '1':
@@ -34,11 +34,11 @@ struct data_unit{
 				return this->stru
 		}
 	}
-}
+};
 
 struct Table_row{
-	vector <data_unit> row;
-}
+	vector <data_type> row;
+};
 
 struct Table{
 	string table_name;
@@ -53,4 +53,27 @@ struct Table{
 	int no_of_record(){
 		return this-> table_row.size();
 	}
-}
+};
+
+map<string , Table> Table_all;
+
+struct operators{
+	string type;
+	operators(string s){
+		this->type = s;	
+	}
+	bool cal(data_type a, data_type b){
+        if (this->type==">=" && a.type=='1' && b.type=='1' && a.intu>=b.intu) return true;
+        else if (this->type==">" && a.type=='1' && b.type=='1' && a.intu>b.intu) return true;
+        else if (this->type=="<=" && a.type=='1' && b.type=='1' && a.intu<=b.intu) return true;
+        else if (this->type=="<" && a.type=='1' && b.type=='1' && a.intu<b.intu) return true;
+        else if (this->type=="=" && a.type=='1' && b.type=='1' && a.intu==b.intu) return true;
+        else if (this->type=="!=" && a.type=='1' && b.type=='1' && a.intu!=b.intu) return true;
+        else if (this->type=="=" && a.type=='2' && b.type=='2' && a.stru==b.stru) return true;
+        else if (this->type=="!=" && a.type=='2' && b.type=='2' && a.stru!=b.stru) return true;
+
+        else return false;
+    }
+};
+
+typedef pair< pair <string, string>, oper> cond;
