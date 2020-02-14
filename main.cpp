@@ -13,8 +13,8 @@ template<typename T> void printElement(T t, const int& width){
 
 struct data_type{
 	char type;
-	int intu;
-	string stru;
+	int intu; //represent integer
+	string stru; //represent string 
 	data_type(char type, string s){
 		this->type =  type;
 		switch(type){
@@ -163,4 +163,80 @@ void generate_error(int code){
     exit(0);
 
 }
+
+bool condition_checker(vector<cond> cons,Table_row tr,vector<string> table_attr){
+    bool flag=true;
+    int i;
+    for(auto f : cons){
+        i=0;
+        for(i=0;i<table_attr.size();i++){
+            if((f).first.first == table_attr[i]){
+                int j;
+                 //if value is another attribute of relation
+                for(j=0;j<table_attr.size();j++){
+                        if((f).first.second == table_attr[j]){
+                            if(!(f).second.cal(tr.row[i],tr.row[j]) ){
+                                flag=false;
+                                return flag;
+                            }
+                            break;
+                        }
+                }
+                //if value is constant
+                if(j==table_attr.size()){
+                    data_type dt = data_type(tr.row[i].type,(f).first.second);
+                    if(!(f).second.cal(tr.row[i],dt) ){
+                                flag=false;
+                                return flag;
+                    }
+                }
+                break;
+            }
+        }
+ }
+        if(i==table_attr.size()){ 
+            error_generate(3);
+        }
+    }
+    return true;
+}
+
+vector<cond> multiple_condition_handler(vector<string> attr_list,vector<char> attr_type,vector<string> s){
+    vector<cond> cons;
+    char attr_code = '1';
+
+    for(int i=0;i<s.size();i++){
+        int idx,flag=-1;
+        for(idx=0;idx<s[i].size()-1;idx++){
+            if(is_valid_opt(s[i].substr(idx,2))){
+                flag=2;
+                break;
+            }
+            if(is_valid_opt(s[i].substr(idx,1))){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==-1){           
+            error_generate(4);
+        }
+        string attr = s[i].substr(0,idx);
+        string op = s[i].substr(idx,flag);
+        string val = s[i].substr(idx+flag,s[i].size()-idx-flag);
+        if(flag!=-1){
+            operators op1(op);
+            cond en1 = make_pair(make_pair(attr,val),op1);
+            cons.push_back(en1);
+        }
+    }
+    return cons;
+}
+
+bool data_type_comparer(data_type a, data_type b){
+    if(a.type!=b.type)return 0;
+    if(a.type=='1')return a.intu==b.intu;
+    if(a.type=='2')return a.stru==b.stru;
+}
+
+
 
